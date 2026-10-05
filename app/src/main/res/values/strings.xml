@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">ZEMRI Attendance</string>
+    <string name="notification_channel">خدمة الحضور المحلي</string>
+</resources>
