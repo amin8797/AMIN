@@ -38,6 +38,7 @@ public class MainActivity extends Activity {
     private Handler handler=new Handler(Looper.getMainLooper());
     private Runnable liveRunnable;
     private byte[] pendingExport;
+    private LocalHttpServer localServer;
     private static final int REQ_CREATE_XLSX=901;
     private static final int REQ_NOTIF=902;
 
