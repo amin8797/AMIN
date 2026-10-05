@@ -45,16 +45,13 @@ public class MainActivity extends Activity {
         super.onCreate(b);
         getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
         db=AttendanceDb.get(this);
-        if(Build.VERSION.SDK_INT>=33 && checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS)!= PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS},REQ_NOTIF);
+        try {
+            localServer=new LocalHttpServer(this,8080);
+            localServer.start();
+        } catch(Exception e) {
+            Toast.makeText(this,"تعذر تشغيل الخادم المحلي: "+e.getMessage(),Toast.LENGTH_LONG).show();
         }
-        startLocalService();
         showPin();
-    }
-
-    private void startLocalService() {
-        Intent i=new Intent(this,AttendanceServerService.class);
-        if(Build.VERSION.SDK_INT>=26) startForegroundService(i); else startService(i);
     }
 
     private void showPin() {
@@ -210,7 +207,7 @@ public class MainActivity extends Activity {
     @Override protected void onActivityResult(int requestCode,int resultCode,Intent data){super.onActivityResult(requestCode,resultCode,data);if(requestCode==REQ_CREATE_XLSX&&resultCode==RESULT_OK&&data!=null&&data.getData()!=null&&pendingExport!=null){try(OutputStream o=getContentResolver().openOutputStream(data.getData())){o.write(pendingExport);Toast.makeText(this,"تم حفظ Excel",Toast.LENGTH_LONG).show();}catch(Exception e){Toast.makeText(this,"فشل الحفظ: "+e.getMessage(),Toast.LENGTH_LONG).show();}pendingExport=null;}}
 
     @Override public void onBackPressed(){showDashboard();}
-    @Override protected void onDestroy(){stopLive();super.onDestroy();}
+    @Override protected void onDestroy(){stopLive();if(localServer!=null)localServer.stop();super.onDestroy();}
     private void stopLive(){if(liveRunnable!=null){handler.removeCallbacks(liveRunnable);liveRunnable=null;}}
 
     private LinearLayout card(){LinearLayout l=new LinearLayout(this);l.setOrientation(LinearLayout.VERTICAL);l.setPadding(dp(16),dp(16),dp(16),dp(16));l.setBackground(bg(0xffffffff,18));return l;}
