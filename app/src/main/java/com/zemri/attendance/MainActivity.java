@@ -4,6 +4,9 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -142,7 +145,9 @@ public class MainActivity extends Activity {
         TextView state=text(s.open?"الحضور مفتوح":"الحضور مغلق",18,true);state.setTextColor(s.open?0xff047857:0xffb91c1c);card.addView(state);
         if(s.open) {
             try { Bitmap qr=QrUtil.make(url,760);ImageView iv=new ImageView(this);iv.setImageBitmap(qr);iv.setAdjustViewBounds(true);card.addView(iv,new LinearLayout.LayoutParams(-1,dp(330))); } catch(Exception e) { card.addView(text("تعذر إنشاء QR: "+e.getMessage(),14,false)); }
-            TextView link=text(url,14,true);link.setTextIsSelectable(true);link.setGravity(Gravity.CENTER);card.addView(link);
+            TextView link=text(url,16,true);link.setTextIsSelectable(true);link.setGravity(Gravity.CENTER);card.addView(link);
+            Button bigQr=button("عرض QR كبير",0xff2563eb);bigQr.setOnClickListener(v->showBigQr(url));card.addView(bigQr,lp(-1,-2,8,0));
+            Button copy=button("نسخ الرابط",0xffe5e7eb);copy.setTextColor(0xff111827);copy.setOnClickListener(v->copyText(url));card.addView(copy,lp(-1,-2,6,0));
         }
         final TextView count=text("",22,true);count.setGravity(Gravity.CENTER);card.addView(count,lp(-1,-2,10,2));
         final TextView list=text("",15,false);card.addView(list,lp(-1,-2,4,8));
@@ -199,6 +204,42 @@ public class MainActivity extends Activity {
         LinearLayout box=new LinearLayout(this);box.setOrientation(LinearLayout.VERTICAL);box.setPadding(dp(20),0,dp(20),0);
         EditText name=input(c.name);EditText time=input(c.startTime);time.setHint("13:00");EditText day=input(String.valueOf(c.weekday));day.setInputType(InputType.TYPE_CLASS_NUMBER);day.setHint("2=الثلاثاء، 3=الأربعاء");box.addView(name);box.addView(time);box.addView(day);
         new AlertDialog.Builder(this).setTitle("تعديل الحصة").setView(box).setNegativeButton("إلغاء",null).setPositiveButton("حفظ",(d,w)->{int wd=c.weekday;try{wd=Integer.parseInt(day.getText().toString());}catch(Exception ignored){};if(wd<1||wd>7)wd=c.weekday;db.updateCourse(c.id,name.getText().toString().trim(),wd,time.getText().toString().trim());showDashboard();}).show();
+    }
+
+    private void showBigQr(String url) {
+        LinearLayout box=new LinearLayout(this);
+        box.setOrientation(LinearLayout.VERTICAL);
+        box.setPadding(dp(14),dp(14),dp(14),dp(14));
+        box.setGravity(Gravity.CENTER);
+        box.setBackgroundColor(0xffffffff);
+        try {
+            ImageView iv=new ImageView(this);
+            iv.setImageBitmap(QrUtil.make(url,1200));
+            iv.setAdjustViewBounds(true);
+            iv.setBackgroundColor(0xffffffff);
+            iv.setPadding(dp(18),dp(18),dp(18),dp(18));
+            box.addView(iv,new LinearLayout.LayoutParams(-1,dp(520)));
+        } catch(Exception e) {
+            box.addView(text("تعذر إنشاء QR: "+e.getMessage(),16,false));
+        }
+        TextView u=text(url,18,true);
+        u.setGravity(Gravity.CENTER);
+        u.setTextIsSelectable(true);
+        box.addView(u,lp(-1,-2,10,8));
+        Button c=button("نسخ الرابط",0xff111827);
+        c.setOnClickListener(v->copyText(url));
+        box.addView(c,lp(-1,-2,6,0));
+        new AlertDialog.Builder(this)
+                .setTitle("QR الحضور")
+                .setView(box)
+                .setPositiveButton("إغلاق",null)
+                .show();
+    }
+
+    private void copyText(String value) {
+        ClipboardManager cm=(ClipboardManager)getSystemService(Context.CLIPBOARD_SERVICE);
+        if(cm!=null) cm.setPrimaryClip(ClipData.newPlainText("ZEMRI Attendance",value));
+        Toast.makeText(this,"تم نسخ الرابط",Toast.LENGTH_SHORT).show();
     }
 
     private void exportExcel() {
