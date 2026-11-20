@@ -1,0 +1,505 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#07101f">
+<title>Neural Theatre 05 | The Learning Engine</title>
+<style>:root{color-scheme:dark;--bg:#07101b;--surface:#0d1828;--surface2:#101f32;--border:#24354a;--faded:#6d849f;--muted:#98acc3;--white:#eff7ff;--teal:#3ce4dd;--blue:#77a3ff;--green:#70e8a6;--coral:#ff837d;--amber:#ffcc76;--violet:#b39aff}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(ellipse 85% 35% at 80% -5%,#102a43 0,transparent 70%),var(--bg);color:var(--white);font-family:Inter,Segoe UI,Roboto,Arial,sans-serif;font-size:14px;line-height:1.55;font-variant-numeric:tabular-nums}button,select,input{font:inherit}button{cursor:pointer}button:disabled{opacity:.46;cursor:not-allowed}button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid #5df5de;outline-offset:3px}main{width:min(1740px,calc(100% - 60px));margin:auto}.topbar{height:77px;border-bottom:1px solid #233247;display:flex;align-items:center;justify-content:space-between;padding:0 max(30px,calc((100vw - 1740px)/2));background:#091421bb}.brand{display:flex;align-items:center;gap:12px}.brand-icon{font-weight:900;letter-spacing:-.09em;border:1px solid #40dfdb87;background:linear-gradient(145deg,#132e43,#122239);border-radius:13px;width:44px;height:44px;display:grid;place-items:center;font-size:28px;color:#64eee8;box-shadow:0 0 24px #21cfc02b}.brand-icon .dot{font-size:18px;color:#ffc477;letter-spacing:-.3em}.brand strong{display:block;font-size:14px;letter-spacing:.18em;line-height:1.3}.brand small{display:block;color:var(--faded);font-size:9px;font-weight:750;letter-spacing:.17em;margin-top:3px}.header-actions{display:flex;align-items:center;gap:13px}.connection{font-size:10px;font-weight:750;color:#98aeba;letter-spacing:.12em;margin-right:20px}.live-dot{display:inline-block;background:#42e9b7;border-radius:50%;height:7px;width:7px;margin-right:8px;box-shadow:0 0 12px #42e9b7}.ghost-btn,.secondary-btn,.primary-btn{border-radius:10px;padding:11px 15px;font-weight:750;white-space:nowrap;display:inline-flex;align-items:center;justify-content:center;gap:9px;transition:background .15s,transform .15s,border-color .15s}.ghost-btn{background:#102033;border:1px solid #2a4057;color:#bed0e3}.ghost-btn:hover,.secondary-btn:hover{background:#20364d;border-color:#4d6d88}.secondary-btn{background:#102638;border:1px solid #31546a;color:#d5eaff}.primary-btn{background:linear-gradient(115deg,#4ee7d8,#55bce8);border:1px solid #73e5de;color:#05202f;box-shadow:0 7px 25px #15bdaf22}.primary-btn:hover{filter:brightness(1.08);transform:translateY(-1px)}.key{border:1px solid #426178;border-radius:5px;padding:0px 5px;margin-left:3px}
+.hero{min-height:220px;display:flex;justify-content:space-between;align-items:center;position:relative;overflow:hidden;gap:30px;padding:31px 8px 25px}.hero-words{position:relative;z-index:1;max-width:1090px}.eyebrow,.micro-title{color:#64dddb;font-size:10px;font-weight:850;letter-spacing:.18em}.eyebrow-number{padding:5px 8px;border:1px solid #3dbac1;border-radius:6px;margin-right:9px;color:#84ffff}.slash{color:#597589;margin:0 9px}.hero h1{font-weight:900;font-size:clamp(29px,3.1vw,51px);letter-spacing:-.04em;line-height:1.05;margin:15px 0 13px}.hero h1 span{display:block;color:#64e9e1}.hero p{color:#a7bdd0;max-width:910px;margin:0;font-size:14px}.hero p b{color:#ecfbff}.hero-mark{position:relative;flex:0 0 255px;height:188px;display:flex;align-items:center;justify-content:center;flex-direction:column}.hero-infinity{font-size:128px;line-height:1;color:#70e8d4;text-shadow:0 0 45px #2ce7d24c;font-weight:100;transform:rotate(-18deg)}.hero-mark span{font-size:9px;color:#8edbd7;letter-spacing:.24em}.orb{position:absolute;border-radius:50%;border:1px solid #46c4c450}.orb-one{height:178px;width:178px;transform:rotate(25deg) scaleX(1.43)}.orb-two{height:140px;width:140px;transform:rotate(-20deg) scaleX(1.5);border-style:dashed;animation:rotate-ring 22s linear infinite}@keyframes rotate-ring{to{transform:rotate(340deg) scaleX(1.5)}}
+.section-card{background:linear-gradient(145deg,#0e1b2ae8,#101b2b);border:1px solid var(--border);border-radius:16px;box-shadow:0 9px 25px #01080f3b}.toolbar{padding:17px 21px;display:flex;align-items:end;gap:17px;justify-content:space-between;flex-wrap:wrap}.control-set{min-width:155px;flex:1}.control-set:nth-child(3){flex:1.45}.control-set label{display:block;color:#8ea5bc;font-weight:850;letter-spacing:.12em;font-size:9px;margin-bottom:9px}.segmented{display:flex;background:#071724;border:1px solid #2b455b;padding:3px;border-radius:9px;gap:4px}.segmented button{padding:8px 11px;flex:1;border:0;border-radius:7px;color:#8ba1b5;background:transparent;font-weight:800;font-size:12px}.segmented button.active{background:#2a4c5b;color:#5ff8df;box-shadow:inset 0 0 0 1px #399f9c}.control-set select{width:100%;height:41px;border-radius:9px;background:#0a1b2b;border:1px solid #2e475d;padding:0 12px;color:#e9f6ff;outline:none;font-size:12px}.range-ctrl{display:flex;align-items:center;gap:10px;min-height:41px}.range-ctrl input{width:100%;accent-color:#41dacf;cursor:pointer}.range-ctrl span{color:#e8f4ff;font-size:11px;white-space:nowrap;min-width:69px}.tip{color:#7fcaca}.metric-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:16px 0}.metric{border-radius:14px;border:1px solid #283d51;background:#101f2c;padding:18px 19px;overflow:hidden}.metric-a{border-top:2px solid #4cced9}.metric-b{border-top:2px solid #70d7ab}.metric-c{border-top:2px solid #fa9185}.metric-d{border-top:2px solid #ae94fa}.metric-label{font-size:10px;color:#a6bed0;letter-spacing:.12em;font-weight:850}.tiny-icon{margin-right:6px;font-size:12px}.tiny-icon.teal{color:var(--teal)}.tiny-icon.green{color:var(--green)}.tiny-icon.coral{color:var(--coral)}.tiny-icon.violet{color:var(--violet)}.metric-number{font-size:clamp(29px,2.5vw,44px);font-weight:900;letter-spacing:-.06em;line-height:1.35;margin-top:5px}.metric-a .metric-number{color:#67e6ef}.metric-b .metric-number{color:#a3eac1}.metric-c .metric-number{color:#ffad9d}.metric-d .metric-number{color:#c7b1fa}.metric-unit{font-weight:650;font-size:12px;letter-spacing:0;color:#8299ae;margin-left:8px}.metric-caption{font-size:10px;color:#768da4}.lesson-header{display:flex;gap:18px;padding:17px 20px;align-items:center;justify-content:space-between;margin-bottom:15px}.pipeline{display:flex;align-items:center;gap:8px;margin-top:10px}.phase{border:1px solid #293e56;background:#101d30;border-radius:8px;min-width:112px;min-height:56px;color:#b5cade;text-align:left;padding:8px 12px;transition:background .16s,border-color .16s}.phase b{font-size:10px;color:#76a0b9;margin-right:6px}.phase span{font-size:11px;font-weight:900;letter-spacing:.07em}.phase small{display:block;font-size:10px;color:#778ca3;font-weight:500}.phase-active,.phase:hover{border-color:#51c9c6;background:#10313c}.phase-active span{color:#60fae4}.phase-done{border-color:#2d685e;background:#12302e}.phase-done span{color:#80edb5}.phase-connector{font-size:18px;color:#5a7890}.walk-controls{display:flex;gap:9px;flex-wrap:wrap}.walk-controls .primary-btn{padding:13px 16px}.walk-controls .secondary-btn{padding:12px}.workspace{display:grid;grid-template-columns:minmax(0,1.37fr) minmax(420px,.95fr);gap:15px}.network-panel{padding:21px;min-width:0}.panel-top,.chart-title,.science-top{display:flex;justify-content:space-between;align-items:start;gap:10px}.panel-top h2,.training-copy h2,.science-top h2{font-size:22px;letter-spacing:-.03em;line-height:1.2;margin:7px 0 0;font-weight:850}.panel-top h2 span{color:#79dfe5}.legend{display:flex;gap:15px;font-size:10px;color:#91a7bb;white-space:nowrap;margin-top:10px}.legend i{width:16px;height:2px;display:inline-block;vertical-align:middle;margin-right:5px}.legend-fwd{background:#54dce8}.legend-back{background:#ff867f;border-top:2px dashed #ff867f}.graph-wrap{height:390px;width:100%;background:radial-gradient(ellipse 60% 50% at 50% 55%,#13384d55,transparent 75%),linear-gradient(#0b1929,#081523);border:1px solid #223a50;border-radius:13px;margin-top:18px;position:relative;overflow:hidden}.graph-wrap:before{content:"";position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(#26415818 1px,transparent 1px),linear-gradient(90deg,#26415818 1px,transparent 1px);background-size:24px 24px}.graph-wrap svg{height:100%;width:100%;display:block;position:relative;z-index:1;overflow:visible}.network-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:11px;color:#a5bdd0;margin-top:12px}.foot-stats{display:flex;gap:14px;color:#628ca4;font-size:10px;white-space:nowrap}.time-strip{display:flex;gap:9px;margin-top:15px;flex-wrap:wrap}.month-chip{flex:1;text-align:center;border:1px solid #2a4255;border-radius:9px;padding:8px 6px;background:#0d1c2c;min-width:90px}.month-chip span{display:block;font-weight:850;color:#7192a8;font-size:10px}.month-chip b{display:block;font-size:14px;color:#d5eff7;margin-top:2px}.month-chip.target{border-color:#357e60;background:#132f2f}.month-chip.target b{color:#8af1b9}
+.explain-panel{padding:22px;min-width:0}.step-badge{display:flex;justify-content:space-between;gap:6px;align-items:center;margin-top:16px}.step-badge>span:first-child{display:inline-flex;background:#123941;color:#5feee5;padding:6px 9px;border:1px solid #25686e;border-radius:6px;font-size:10px;letter-spacing:.12em;font-weight:900}.step-badge-right{color:#83a8ae;font-size:9px;font-weight:850;letter-spacing:.09em}.explain-panel h2{font-size:clamp(20px,1.7vw,29px);line-height:1.14;letter-spacing:-.025em;margin:17px 0 8px}.explain-panel>p{color:#a9bdce;min-height:53px;margin:0 0 18px;font-size:13px}.equation-frame{border:1px solid #32556a;border-radius:10px;background:linear-gradient(120deg,#102a3a,#122337);padding:16px 17px}.equation-label{color:#6acbd5;font-size:9px;letter-spacing:.12em;font-weight:850}.equation{font-size:clamp(14px,1.4vw,21px);font-weight:800;letter-spacing:-.015em;color:#e5f7f8;margin:10px 0;word-break:break-word}.equation .math-em{color:#61e4d4}.equation .math-err{color:#ff8e84}.equation-help{font-size:11px;color:#829eb4}.callout{background:#192b3a;border-left:3px solid #65dbd7;padding:11px 13px;display:flex;gap:10px;margin-top:13px;min-height:61px;font-size:12px;color:#c3d5e5;border-radius:0 8px 8px 0}.callout-icon{color:#64e5d8;font-size:18px}.microscope-subtitle{font-size:10px;color:#86a6bf;letter-spacing:.13em;font-weight:850;margin:19px 0 8px}.keyidea{color:#d6e6ef;font-size:12px;line-height:1.5}.weight-ledger{border:1px solid #273f52;border-radius:9px;overflow:hidden}.ledger-head,.ledger-row{display:grid;grid-template-columns:1.35fr 1fr 1fr 1fr;gap:6px;align-items:center;padding:8px 9px}.ledger-head{color:#7f9cb0;background:#12273a;font-size:8px;letter-spacing:.06em;font-weight:900}.ledger-row{font-size:11px;color:#d1e4ed;border-top:1px solid #1f3345}.ledger-row span:first-child{color:#a9dbec;font-family:ui-monospace,Consolas,monospace}.ledger-row .grad-plus{color:#ef9c83}.ledger-row .grad-minus{color:#7ce2ce}.gate-box{border-top:1px solid #25394b;margin-top:16px}.gate-box[hidden]{display:none}.gate-row{display:grid;grid-template-columns:54px 1fr 45px;gap:8px;align-items:center;color:#a4c2d7;font-size:10px;margin:7px 0}.gate-track{height:9px;background:#172e43;border-radius:30px;overflow:hidden}.gate-fill{height:100%;border-radius:30px;background:#64ddd1;transition:width .25s}.gate-box p{font-size:10px;color:#779bb5;margin:8px 0 0}
+.training-bar{padding:20px 22px;margin-top:15px;display:grid;grid-template-columns:1fr auto;gap:9px 25px;align-items:center}.training-copy h2{font-size:22px}.training-copy p{color:#8fa8bd;margin:8px 0 0;font-size:12px;max-width:730px}.training-copy strong{color:#dff7ed}.training-actions{display:flex;gap:9px;align-items:center;flex-wrap:wrap}.progress-track{grid-column:1/-1;height:5px;border-radius:3px;background:#1c384b;overflow:hidden;margin-top:8px}.progress-track>div{height:100%;width:0;background:linear-gradient(90deg,#68ddb5,#5ecfe8);transition:width .12s}.training-status{grid-column:1/-1;font-size:11px;color:#83aab8}.charts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px;margin-top:15px}.chart-card{padding:20px 20px 12px;min-width:0}.chart-title h3{font-size:19px;font-weight:800;letter-spacing:-.018em;margin:6px 0 0}.chart-caption{font-size:10px;color:#7895aa;text-align:right;max-width:190px}.chart{height:280px;margin:0 -5px}.chart-note{color:#728ba1;font-size:11px;margin:0 0 10px;min-height:33px}.science-footer{padding:23px;margin-top:15px}.science-top h2{font-size:24px}.science-badge{color:#9dd9d5;border:1px solid #34676e;background:#102d39;border-radius:8px;padding:7px 9px;font-size:10px;font-weight:800;letter-spacing:.08em}.algorithm-cards{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:18px}.algorithm-cards>div{background:#0b1b2c;border:1px solid #294357;border-radius:10px;padding:14px}.algorithm-cards b{font-size:10px;color:#68e1de;letter-spacing:.06em}.algorithm-cards p{font-size:11px;color:#abc0cd;min-height:40px;line-height:1.35}.algorithm-cards code{display:block;color:#e0eafb;font-size:12px;font-weight:800}.bottom-explain{border-top:1px solid #2a3e51;padding-top:18px;margin-top:18px;display:grid;grid-template-columns:1fr 1fr;gap:32px}.bottom-explain b{color:#dceef3}.bottom-explain p{color:#91a9bd;font-size:12px;line-height:1.6;margin:6px 0 0}footer{display:flex;justify-content:space-between;color:#658098;font-weight:800;letter-spacing:.15em;font-size:9px;padding:21px 0 34px}.overlay{position:fixed;inset:0;z-index:50;background:#000c;display:grid;place-items:center;padding:20px;backdrop-filter:blur(9px)}.overlay[hidden]{display:none}.help-modal{position:relative;background:#102336;border:1px solid #397386;border-radius:17px;width:min(600px,100%);padding:32px;box-shadow:0 30px 150px #0008}.help-modal h2{font-size:29px;letter-spacing:-.035em}.help-modal ol{padding-left:22px;color:#b8d0e0}.help-modal li{margin-bottom:11px}.help-modal li b{color:#e9fbff}.modal-close{position:absolute;right:18px;top:14px;font-size:28px;background:none;border:0;color:#d4e5eb}.shortcuts{display:flex;flex-wrap:wrap;gap:13px;margin-top:21px;color:#8db1c7;font-size:11px}.shortcuts kbd{background:#20394e;border-radius:4px;padding:3px 6px;color:#f3ffff}
+/* svg glow */.node-glow{filter:drop-shadow(0 0 9px #43d5df65)}.graph-line{stroke:#3d839c;stroke-width:2;opacity:.38}.graph-line.input-line{stroke:#55c9d4;opacity:.7}.graph-line.output-line{stroke:#93a8ff;opacity:.75}.graph-line.backward{stroke:#ff9482;stroke-dasharray:9 8;stroke-width:3;opacity:.9;animation:dashback .8s linear infinite}@keyframes dashback{to{stroke-dashoffset:-34}}.pulse-particle{fill:#c1ffff;filter:drop-shadow(0 0 7px #34fff2)}.node-caption{font-size:18px;fill:#a1bfd2;font-weight:760}.node-value{font-size:17px;fill:#defbfc;font-weight:850}.svg-small{fill:#668ca5;font-size:13px;font-weight:700;letter-spacing:.08em}.svg-title{font-size:19px;fill:#e5f7f7;font-weight:850}.svg-error{fill:#ff9b85}.svg-pred{fill:#71e0eb}.svg-target{fill:#8beab2}.svg-back{fill:#ff9c88}
+@media(max-width:1300px){.workspace{grid-template-columns:minmax(0,1fr)}.network-panel{min-height:510px}.lesson-header{align-items:start;flex-direction:column}.toolbar{justify-content:start}.control-set{min-width:180px}.pipeline{flex-wrap:wrap}.phase-connector{display:none}.walk-controls{align-self:stretch}.training-bar{grid-template-columns:1fr}.training-actions{justify-content:start}}
+@media(max-width:900px){main{width:calc(100% - 24px)}.topbar{padding:0 15px;height:68px}.connection{display:none}.brand strong{font-size:11px}.brand small{font-size:8px}.header-actions{gap:6px}.header-actions button{font-size:0;padding:9px}.header-actions button span{font-size:13px}.hero{min-height:170px}.hero-mark{display:none}.hero h1{font-size:34px}.metric-grid{grid-template-columns:repeat(2,1fr)}.charts{grid-template-columns:1fr}.algorithm-cards{grid-template-columns:repeat(2,1fr)}.bottom-explain{grid-template-columns:1fr}.chart{height:260px}.network-panel{padding:14px}.graph-wrap{height:330px}.foot-stats{display:none}.panel-top{flex-wrap:wrap}.legend{margin-top:0}.pipeline{gap:7px}.phase{min-width:95px}.explain-panel{padding:16px}.metric{padding:14px}.training-actions button{flex:1}.training-actions{width:100%}footer{display:block;text-align:center}footer span{display:block;margin-top:8px}}
+@media(max-width:500px){.hero h1{font-size:27px}.hero p{font-size:12px}.graph-wrap{height:240px}.phase{width:calc(50% - 5px);min-width:0}.toolbar{gap:14px}.control-set{flex:1 1 100%}.metric-number{font-size:29px}.metric-unit{display:block;font-size:10px;margin:0}.algorithm-cards{grid-template-columns:1fr 1fr}.pipeline{width:100%}.time-strip{gap:4px}.month-chip{min-width:0;flex-basis:28%;font-size:10px}.month-chip b{font-size:12px}.chart-card{padding:15px 9px}.chart-title{padding:0 7px}.chart-title h3{font-size:16px}.chart-caption{display:none}.training-bar{padding:15px}}
+</style>
+</head>
+<body>
+<div id="app">
+<header class="topbar">
+ <div class="brand"><span class="brand-icon">N<span class="dot">•</span></span><div><strong>NEURAL THEATRE</strong><small>LECTURE 05 · MASTER 2 DATA SCIENCE</small></div></div>
+ <div class="header-actions"><span class="connection"><span class="live-dot"></span>100% LOCAL · REAL GRADIENTS</span><button id="helpBtn" class="ghost-btn">How to teach <span class="key">?</span></button><button id="fullscreenBtn" class="ghost-btn"><span>⛶</span> Projector mode</button></div>
+</header>
+<main>
+<section class="hero">
+ <div class="hero-words"><div class="eyebrow"><span class="eyebrow-number">05</span> THE LEARNING ENGINE <span class="slash">/</span> BACKPROPAGATION THROUGH TIME</div>
+ <h1>WHAT HAPPENS WHEN <span>A NETWORK IS WRONG?</span></h1>
+ <p>Watch it <b>predict</b> → measure its <b>error</b> → send a learning signal <b>backward</b> → <b>change its weights</b> → <b>try again</b>. Every number comes from a working neural network.</p></div>
+ <div class="hero-mark"><div class="orb orb-one"></div><div class="orb orb-two"></div><div class="hero-infinity">↺</div><span>LEARN · CORRECT · REPEAT</span></div>
+</section>
+<section class="toolbar section-card">
+ <div class="control-set"><label>NETWORK TYPE</label><div class="segmented"><button class="model-btn active" data-model="RNN">Simple RNN</button><button class="model-btn" data-model="LSTM">LSTM</button></div></div>
+ <div class="control-set"><label>TEACHING SCENARIO</label><select id="scenario"><option value="growth">Growing monthly sales</option><option value="season">Seasonal demand</option><option value="shock">Unexpected market shock</option></select></div>
+ <div class="control-set"><label>PREDICTION TO INSPECT</label><div class="range-ctrl"><input id="sampleSlider" type="range" min="4" max="59" step="1" value="25"><span id="sampleLabel">Month 26</span></div></div>
+ <div class="control-set"><label>LEARNING RATE <span class="tip" title="Larger learning rate means bigger weight updates. Too high may make training unstable.">ⓘ</span></label><div class="range-ctrl"><input id="lrSlider" type="range" min="0.005" max="0.10" step="0.005" value="0.04"><span id="lrValue">0.040</span></div></div>
+ <div class="control-set"><label>TRAIN ON</label><select id="trainScope"><option value="sample">Highlighted example</option><option value="all">All training months</option></select></div>
+</section>
+<div class="metric-grid">
+ <div class="metric metric-a"><div class="metric-label"><span class="tiny-icon teal">◉</span> NETWORK PREDICTION</div><div class="metric-number"><span id="prediction">—</span><span class="metric-unit">units</span></div><div class="metric-caption" id="predictionFoot">Before any learning step</div></div>
+ <div class="metric metric-b"><div class="metric-label"><span class="tiny-icon green">◆</span> CORRECT ANSWER</div><div class="metric-number"><span id="actual">—</span><span class="metric-unit">units</span></div><div class="metric-caption">Observed sales for this month</div></div>
+ <div class="metric metric-c"><div class="metric-label"><span class="tiny-icon coral">✕</span> ABSOLUTE MISTAKE</div><div class="metric-number"><span id="error">—</span><span class="metric-unit">units</span></div><div class="metric-caption" id="errorFoot">Difference from the real value</div></div>
+ <div class="metric metric-d"><div class="metric-label"><span class="tiny-icon violet">↻</span> GRADIENT UPDATES</div><div class="metric-number" id="updates">0</div><div class="metric-caption" id="trainFoot">No weights updated yet</div></div>
+</div>
+<section class="lesson-header section-card">
+ <div><div class="micro-title">THE LEARNING LOOP · CLICK EACH STAGE</div><div class="pipeline" id="pipeline">
+ <button class="phase phase-active" data-phase="0"><b>01</b><span>INPUT</span><small>Read past sales</small></button>
+ <span class="phase-connector">→</span>
+ <button class="phase" data-phase="1"><b>02</b><span>FORWARD</span><small>Make prediction</small></button>
+ <span class="phase-connector">→</span>
+ <button class="phase" data-phase="2"><b>03</b><span>ERROR</span><small>How wrong?</small></button>
+ <span class="phase-connector">→</span>
+ <button class="phase" data-phase="3"><b>04</b><span>BACKWARD</span><small>Trace blame</small></button>
+ <span class="phase-connector">→</span>
+ <button class="phase" data-phase="4"><b>05</b><span>UPDATE</span><small>Improve weights</small></button>
+ </div></div>
+ <div class="walk-controls"><button id="nextBtn" class="primary-btn"><span>Next learning step</span> <span>→</span></button><button id="autoBtn" class="secondary-btn"><span id="autoIcon">▶</span> Auto walkthrough</button></div>
+</section>
+<section class="workspace">
+ <div class="network-panel section-card">
+  <div class="panel-top"><div><div class="micro-title">LIVE COMPUTATIONAL GRAPH</div><h2>Inside the <span id="networkName">recurrent neural network</span></h2></div><div class="legend"><span><i class="legend-fwd"></i>Forward signal</span><span><i class="legend-back"></i>Error signal</span></div></div>
+  <div class="graph-wrap" id="graphWrap"><svg id="netGraph" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 470" role="img" aria-label="Interactive unrolled recurrent neural network"></svg></div>
+  <div class="network-foot"><div id="focusInsight">The network receives four previous months of sales.</div><div class="foot-stats"><span id="cellLabel">Hidden units: 3</span><span id="seqLabel">Sequence: 4 steps</span></div></div>
+  <div class="time-strip" id="timeStrip"></div>
+ </div>
+ <aside class="explain-panel section-card">
+  <div class="micro-title">ALGORITHM MICROSCOPE</div>
+  <div class="step-badge"><span id="stepCount">STEP 1 / 5</span><span class="step-badge-right" id="status">WAITING FOR INPUT</span></div>
+  <h2 id="stepTitle">Show the network the past.</h2>
+  <p id="stepDescription">The input contains previous monthly sales, in chronological order.</p>
+  <div class="equation-frame"><div class="equation-label">THE EXACT OPERATION</div><div id="equation" class="equation">x = [sales₁, sales₂, sales₃, sales₄]</div><div class="equation-help" id="equationHelp">The sequence is normalized before entering the network.</div></div>
+  <div class="callout" id="actionOutcome"><span class="callout-icon">✦</span><span>Nothing has been trained yet. Click <b>Next learning step</b>.</span></div>
+  <div class="microscope-subtitle">THE KEY IDEA</div><div class="keyidea" id="keyIdea">The order of observations matters. That is why we use a recurrent network.</div>
+  <div class="microscope-subtitle">WATCH THE GRADIENT CHANGE A REAL WEIGHT</div>
+  <div class="weight-ledger"><div class="ledger-head"><span>PARAMETER</span><span>VALUE BEFORE</span><span>GRADIENT</span><span>VALUE AFTER</span></div><div class="ledger-content" id="ledger"></div></div>
+  <div class="gate-box" id="gateBox" hidden><div class="microscope-subtitle">LSTM GATES · FINAL TIME STEP</div><div id="gateMeters"></div><p>Gates are computed from actual trained parameters, not decorative sliders.</p></div>
+ </aside>
+</section>
+<section class="training-bar section-card">
+ <div class="training-copy"><div class="micro-title">NOW LET THE NETWORK LEARN</div><h2>Train it. Watch the mistake change.</h2><p>Each click performs <strong>real forward propagation + BPTT + gradient descent</strong>. The model has only three hidden units, so every change is traceable.</p></div>
+ <div class="training-actions"><button class="secondary-btn train-btn" data-n="1">Train ×1</button><button class="secondary-btn train-btn" data-n="20">Train ×20</button><button class="primary-btn train-btn" data-n="100">Train ×100</button><button id="stopBtn" class="ghost-btn" disabled>Stop</button><button id="resetBtn" class="ghost-btn">↺ Reset weights</button></div>
+ <div class="progress-track"><div id="progressFill"></div></div><div class="training-status" id="trainingStatus">Ready. Start with the five-step walkthrough to inspect one update.</div>
+</section>
+<section class="charts">
+ <div class="chart-card section-card"><div class="chart-title"><div><div class="micro-title">01 / PREDICTION VS REALITY</div><h3>Did the network predict correctly?</h3></div><span class="chart-caption">Units sold · highlighted window</span></div><div class="chart" id="forecastPlot"></div><p class="chart-note">Blue = previous input months. Green = the correct next value. Orange = the model's prediction.</p></div>
+ <div class="chart-card section-card"><div class="chart-title"><div><div class="micro-title">02 / THE COST OF MISTAKES</div><h3>Is learning actually improving?</h3></div><span class="chart-caption">Mean squared loss · normalized scale</span></div><div class="chart" id="lossPlot"></div><p class="chart-note">The training split ends at Month 43. Test months are unseen by whole-dataset training; lower test loss is not guaranteed.</p></div>
+ <div class="chart-card section-card"><div class="chart-title"><div><div class="micro-title">03 / BACKPROPAGATION THROUGH TIME</div><h3>Where does the error signal travel?</h3></div><span class="chart-caption">Gradient norm by previous time step</span></div><div class="chart" id="gradientPlot"></div><p class="chart-note" id="gradientNote">Bars show the real backward signal at each time step—not an illustration of typical gradient sizes.</p></div>
+ <div class="chart-card section-card"><div class="chart-title"><div><div class="micro-title">04 / GRADIENT DESCENT TERRAIN</div><h3>Why does changing a weight help?</h3></div><span class="chart-caption">Interactive 2D · hover to inspect</span></div><div class="chart" id="surfacePlot"></div><p class="chart-note">Exact 2D loss slice for one output weight and the output bias. The dashed descent direction is enlarged ×12 for visibility; the green marker shows the true projected update.</p></div>
+</section>
+<section class="science-footer section-card">
+ <div class="science-top"><div><div class="micro-title">THE FULL ALGORITHM IN FIVE LINES</div><h2>Not magic. Five measurable operations.</h2></div><span class="science-badge">EQUATIONS → BEHAVIOR</span></div>
+ <div class="algorithm-cards"><div><b>01 / INPUT</b><p>Choose 4 earlier observations.</p><code>x₁, x₂, x₃, x₄</code></div><div><b>02 / FORWARD</b><p>Compute hidden states and a prediction.</p><code>ŷ = model(x)</code></div><div><b>03 / LOSS</b><p>Measure the size of the mistake.</p><code>L = ½(ŷ − y)²</code></div><div><b>04 / BACKWARD</b><p>Calculate how each weight affects loss.</p><code>g = ∂L / ∂w</code></div><div><b>05 / UPDATE</b><p>Move weights against their gradients.</p><code>w ← w − ηg</code></div></div>
+ <div class="bottom-explain"><div><b>What if the prediction is wrong?</b><p>The model does not "know" the right answer automatically. During supervised training, the real target supplies an error signal. Backpropagation calculates derivatives, and an optimizer changes the weights. A new forward pass checks whether the prediction changed.</p></div><div><b>Important scientific limits</b><p>These are small, trainable RNN and LSTM networks with authentic analytical BPTT gradients. Sales are simulated for education, not real business records. A single update need not improve every example or the held-out set, and LSTM is not inherently superior in every problem.</p></div></div>
+</section>
+<footer>NEURAL THEATRE · DEEP LEARNING LAB 05 <span>SELF-CONTAINED OFFLINE EXPERIENCE · ENGLISH EDITION</span></footer>
+</main>
+</div>
+<div id="helpOverlay" class="overlay" hidden><div class="help-modal"><button id="closeHelp" aria-label="Close" class="modal-close">×</button><div class="micro-title">TEACHER'S QUICK GUIDE · 90 MINUTE LECTURE</div><h2>Make the network fail. Then let it learn.</h2><ol><li><b>Start with Simple RNN.</b> The green number is the correct next sales value; the blue value is the network's current guess.</li><li><b>Press Next learning step five times.</b> Tell students: input → prediction → error → backward derivatives → new weights.</li><li><b>Point to the WEIGHT LEDGER.</b> This is a real parameter update, not an animation pretending to train a network.</li><li><b>Press Train ×20.</b> Explain why selected-sample loss typically falls while test loss need not fall.</li><li><b>Switch to LSTM.</b> Show forget/input/output gate values and the distinct memory state.</li><li><b>Change to Unexpected market shock.</b> Discuss why sudden structural changes make forecasting difficult.</li></ol><div class="shortcuts"><span><kbd>→</kbd> Next step</span><span><kbd>Space</kbd> Start/stop walkthrough</span><span><kbd>R</kbd> Reset</span><span><kbd>Esc</kbd> Close</span></div></div></div>
+<script src="https://cdn.plot.ly/plotly-3.3.1.min.js"></script>
+<script>/* The Learning Engine: two genuine trainable recurrent architectures.
+   Every backward gradient is derived analytically via BPTT.
+   No neural-network packages, server calls or simulated training results. */
+'use strict';
+const HIDDEN = 3, SEQUENCE = 4;
+const sigmoid = z => 1/(1+Math.exp(-Math.max(-40,Math.min(40,z))));
+const tanh = z => Math.tanh(z);
+const zeros = n => Array.from({length:n},()=>0);
+const mat = (n,m, f=()=>0)=>Array.from({length:n},(_,i)=>Array.from({length:m},(_,j)=>f(i,j)));
+const seedNumber = (seed=0) => {let s=(seed>>>0)||1;return ()=>{s^=s<<13;s^=s>>>17;s^=s<<5;return (s>>>0)/4294967296;};};
+const scale = v => (v-165)/100;
+const unscale = v => v*100+165;
+function makeSeries(kind){
+ return Array.from({length:60},(_,t)=>{
+  let v;
+  if(kind==='season') v=134+0.63*t+31*Math.sin(2*Math.PI*t/12-0.82)+5*Math.sin(t*.51);
+  else if(kind==='shock') v=105+1.55*t+11*Math.sin(2*Math.PI*t/12)+(t>=34?55:0)-(t>=50?35:0)+4*Math.sin(t*.37);
+  else v=93+2.56*t+14*Math.sin(2*Math.PI*t/12-.5)+4*Math.sin(t*.41);
+  return Math.round(v*10)/10;
+ });
+}
+function sampleAt(series,i){return {x:series.slice(i-4,i).map(scale),y:scale(series[i]),raw:series.slice(i-4,i),actual:series[i],index:i};}
+function norm2(v){return Math.sqrt(v.reduce((s,x)=>s+x*x,0));}
+function initModel(type){
+ const rnd=seedNumber(type==='LSTM'?719:2026);const rand=(a=0.23)=>(rnd()-.5)*2*a;
+ if(type==='RNN') return {type,Wx:zeros(HIDDEN).map(()=>rand(.4)),Wh:mat(HIDDEN,HIDDEN,(i,j)=>i===j?rand(.26)+.18:rand(.24)),b:[.05,-.07,.09],Wy:[.12,-.19,.13],by:-.32};
+ const model={type, gates:{},Wy:[.13,-.12,.17],by:-.30};
+ for(let gate of ['f','i','g','o']) model.gates[gate]={Wx:zeros(HIDDEN).map(()=>rand(.32)),Wh:mat(HIDDEN,HIDDEN,(i,j)=>i===j?rand(.20)+.08:rand(.19)),b:zeros(HIDDEN).map((_,j)=>gate==='f'?.9+rand(.12):gate==='i'?.45+rand(.12):rand(.13))};
+ return model;
+}
+function clone(m){return JSON.parse(JSON.stringify(m));}
+function forward(model,x){
+ let h=zeros(HIDDEN), c=zeros(HIDDEN), states=[];
+ for(let t=0;t<x.length;t++){
+  const hPrev=h.slice(),cPrev=c.slice();
+  if(model.type==='RNN'){
+   const a=zeros(HIDDEN).map((_,j)=>model.Wx[j]*x[t]+model.Wh[j].reduce((s,w,k)=>s+w*hPrev[k],model.b[j]));
+   h=a.map(tanh);states.push({t,x:x[t],hPrev,h:h.slice(),a});
+  }else{
+   const values={};
+   for(let key of ['f','i','g','o']){
+    const gate=model.gates[key];
+    values[key]=zeros(HIDDEN).map((_,j)=>{let z=gate.Wx[j]*x[t]+gate.Wh[j].reduce((s,w,k)=>s+w*hPrev[k],gate.b[j]);return key==='g'?tanh(z):sigmoid(z);});
+   }
+   c=zeros(HIDDEN).map((_,j)=>values.f[j]*cPrev[j]+values.i[j]*values.g[j]);
+   h=zeros(HIDDEN).map((_,j)=>values.o[j]*tanh(c[j]));
+   states.push({t,x:x[t],hPrev,cPrev,h:h.slice(),c:c.slice(),gates:values});
+  }
+ }
+ return {pred:model.Wy.reduce((s,w,j)=>s+w*h[j],model.by),states,h:h.slice()};
+}
+function blankGrad(model){if(model.type==='RNN')return {type:'RNN',Wx:zeros(HIDDEN),Wh:mat(HIDDEN,HIDDEN),b:zeros(HIDDEN),Wy:zeros(HIDDEN),by:0};let out={type:'LSTM',gates:{},Wy:zeros(HIDDEN),by:0};for(let g of ['f','i','g','o'])out.gates[g]={Wx:zeros(HIDDEN),Wh:mat(HIDDEN,HIDDEN),b:zeros(HIDDEN)};return out;}
+function lossAndGrad(model,sample){
+ const f=forward(model,sample.x),dY=f.pred-sample.y,loss=.5*dY*dY,grad=blankGrad(model);
+ grad.by=dY;
+ for(let j=0;j<HIDDEN;j++)grad.Wy[j]=dY*f.h[j];
+ let dhNext=model.Wy.map(v=>v*dY),dcNext=zeros(HIDDEN), backwardNorm=[];
+ for(let t=f.states.length-1;t>=0;t--){
+  const st=f.states[t], dhPrev=zeros(HIDDEN), dpre=[];
+  if(model.type==='RNN'){
+   for(let j=0;j<HIDDEN;j++){
+    const da=dhNext[j]*(1-st.h[j]*st.h[j]);dpre.push(da);
+    grad.Wx[j]+=da*st.x;grad.b[j]+=da;
+    for(let k=0;k<HIDDEN;k++){grad.Wh[j][k]+=da*st.hPrev[k];dhPrev[k]+=model.Wh[j][k]*da;}
+   }
+  }else{
+   const dcPrev=zeros(HIDDEN);
+   for(let j=0;j<HIDDEN;j++){
+    const v=st.gates,th=tanh(st.c[j]);
+    const oPart=dhNext[j]*th;
+    const dCell=dhNext[j]*v.o[j]*(1-th*th)+dcNext[j];
+    const raw={f:dCell*st.cPrev[j],i:dCell*v.g[j],g:dCell*v.i[j],o:oPart};
+    dcPrev[j]=dCell*v.f[j];
+    for(let key of ['f','i','g','o']){
+     const activation=v[key][j];
+     const dA=raw[key]*(key==='g'?(1-activation*activation):activation*(1-activation));
+     dpre.push(dA);let gg=grad.gates[key], mg=model.gates[key];
+     gg.Wx[j]+=dA*st.x;gg.b[j]+=dA;
+     for(let k=0;k<HIDDEN;k++){gg.Wh[j][k]+=dA*st.hPrev[k];dhPrev[k]+=mg.Wh[j][k]*dA;}
+    }
+   }
+   dcNext=dcPrev;
+  }
+  backwardNorm[t]=norm2(dpre);
+  dhNext=dhPrev;
+ }
+ return {f,grad,loss,dY,backwardNorm};
+}
+function* parameterPaths(model){yield ['by'];for(let i=0;i<HIDDEN;i++)yield ['Wy',i];if(model.type==='RNN'){for(let i=0;i<HIDDEN;i++){yield ['Wx',i];yield ['b',i];for(let j=0;j<HIDDEN;j++)yield ['Wh',i,j];}}else for(let key of ['f','i','g','o'])for(let i=0;i<HIDDEN;i++){yield ['gates',key,'Wx',i];yield ['gates',key,'b',i];for(let j=0;j<HIDDEN;j++)yield ['gates',key,'Wh',i,j];}}
+function getPath(obj,p){return p.reduce((v,k)=>v[k],obj);}
+function setPath(obj,p,v){let at=obj;for(let i=0;i<p.length-1;i++)at=at[p[i]];at[p[p.length-1]]=v;}
+function stepUpdate(model,sample,lr){
+ const result=lossAndGrad(model,sample),old=clone(model),maxAbs=Math.max(...Array.from(parameterPaths(model),p=>Math.abs(getPath(result.grad,p))));
+ // No hidden clipping. The user can experiment with learning rate and observe instability.
+ for(let p of parameterPaths(model))setPath(model,p,getPath(model,p)-lr*getPath(result.grad,p));
+ const after=lossAndGrad(model,sample);return {before:result,after,old,grads:result.grad,maxAbs};
+}
+function dataLoss(model,series,from,to){let total=0;for(let i=from;i<=to;i++)total+=lossAndGrad(model,sampleAt(series,i)).loss;return total/(to-from+1);}
+const ENGINE={HIDDEN,SEQUENCE,scale,unscale,makeSeries,sampleAt,initModel,clone,forward,lossAndGrad,blankGrad,parameterPaths,getPath,setPath,stepUpdate,dataLoss};
+if(typeof module!=='undefined'&&module.exports)module.exports=ENGINE;
+
+'use strict';
+(()=>{
+const E=ENGINE;
+const $=id=>document.getElementById(id);
+const format=(v,d=3)=>Number.isFinite(v)?(v>=0?'+':'')+v.toFixed(d):'—';
+const fixed=(v,d=2)=>Number.isFinite(v)?v.toFixed(d):'—';
+const number=v=>Number.isFinite(v)?v.toFixed(1):'—';
+const month=i=>'M'+String(i+1).padStart(2,'0');
+const ev=(el,name,fn)=>el.addEventListener(name,fn);
+const state={type:'RNN',scenario:'growth',series:E.makeSeries('growth'),model:E.initModel('RNN'),index:25,lr:.04,scope:'sample',phase:0,history:[],last:null,updates:0,training:false,cancel:false,autoplay:null,trainCursor:4,chartMade:{},surfaceSignature:null};
+const PHASES=[
+{title:'Show the network the past.',status:'OBSERVE INPUTS',idea:'Time order matters. Each month is read after the previous one. The target is not shown to the model during prediction.'},
+{title:'Let the network make a guess.',status:'FORWARD PASS',idea:'Hidden states are carried from earlier months to later months. The output is computed from the final hidden state.'},
+{title:'Compare the guess with reality.',status:'MEASURE ERROR',idea:'The correct target is supplied during supervised training. Loss measures how costly the prediction error is.'},
+{title:'Send the learning signal backward.',status:'BACKPROPAGATE',idea:'The chain rule assigns a gradient to each parameter through all four time steps. The network has no human understanding of blame.'},
+{title:'Change the weights. Try again.',status:'GRADIENT DESCENT',idea:'Parameters move opposite to their gradients: w_new = w_old − learning_rate × gradient. Recompute to check the new error.'}
+];
+const PLOT_BASE={paper_bgcolor:'rgba(0,0,0,0)',plot_bgcolor:'rgba(0,0,0,0)',font:{color:'#9bb4ca',family:'Segoe UI, Arial, sans-serif',size:11},margin:{l:45,r:15,t:18,b:36},hovermode:'closest',showlegend:true,legend:{orientation:'h',x:0,y:1.22,font:{size:10}},xaxis:{gridcolor:'#203449',zerolinecolor:'#284157',linecolor:'#284157',tickfont:{color:'#7294a9'}},yaxis:{gridcolor:'#203449',zerolinecolor:'#284157',linecolor:'#284157',tickfont:{color:'#7294a9'}}};
+const plotConfig={responsive:true,displaylogo:false,displayModeBar:false,scrollZoom:false};
+function init(){state.history=[{step:0,train:E.dataLoss(state.model,state.series,4,42),test:E.dataLoss(state.model,state.series,43,59)}];bind();render(true);}
+function bind(){
+ document.querySelectorAll('.model-btn').forEach(el=>ev(el,'click',()=>{if(state.training)return;stopAuto();state.type=el.dataset.model;reset(true);}));
+ ev($('scenario'),'change',e=>{if(state.training)return;stopAuto();state.scenario=e.target.value;reset(true);});
+ ev($('sampleSlider'),'input',e=>{if(state.training)return;state.index=+e.target.value;state.phase=0;state.last=null;render(false);});
+ ev($('lrSlider'),'input',e=>{state.lr=+e.target.value;$('lrValue').textContent=state.lr.toFixed(3);render(false);});
+ ev($('trainScope'),'change',e=>{state.scope=e.target.value;render(false);});
+ ev($('nextBtn'),'click',nextPhase);
+ document.querySelectorAll('[data-phase]').forEach(el=>ev(el,'click',()=>setPhase(+el.dataset.phase)));
+ ev($('autoBtn'),'click',()=>{if(state.autoplay)stopAuto();else{if(state.phase===4)state.phase=0;state.autoplay=setInterval(nextPhase,1650);$('autoIcon').textContent='Ⅱ';nextPhase();}});
+ document.querySelectorAll('.train-btn').forEach(el=>ev(el,'click',()=>runTraining(+el.dataset.n)));
+ ev($('stopBtn'),'click',()=>{state.cancel=true;$('trainingStatus').textContent='Stopping after the current batch…';});
+ ev($('resetBtn'),'click',()=>{if(!state.training){stopAuto();reset(true);}});
+ ev($('fullscreenBtn'),'click',async()=>{try{if(!document.fullscreenElement)await document.documentElement.requestFullscreen();else await document.exitFullscreen();}catch(e){$('trainingStatus').textContent='Fullscreen is unavailable in this browser.';}});
+ ev($('helpBtn'),'click',()=>$('helpOverlay').hidden=false);
+ ev($('closeHelp'),'click',()=>$('helpOverlay').hidden=true);
+ ev($('helpOverlay'),'click',e=>{if(e.target===$('helpOverlay'))$('helpOverlay').hidden=true;});
+ document.addEventListener('keydown',e=>{
+ if(e.key==='Escape'){$('helpOverlay').hidden=true;return;}
+ if(['INPUT','SELECT','TEXTAREA'].includes(document.activeElement?.tagName))return;
+ if(e.key==='ArrowRight'){e.preventDefault();nextPhase();}
+ if(e.code==='Space'){e.preventDefault();$('autoBtn').click();}
+ if(e.key.toLowerCase()==='r')$('resetBtn').click();
+ });
+ window.addEventListener('resize',()=>{for(let id of ['forecastPlot','lossPlot','gradientPlot','surfacePlot'])if(state.chartMade[id])Plotly.Plots.resize($(id));});
+}
+function stopAuto(){if(state.autoplay){clearInterval(state.autoplay);state.autoplay=null;$('autoIcon').textContent='▶';}}
+function reset(newData=false){
+ if(newData)state.series=E.makeSeries(state.scenario);
+ state.model=E.initModel(state.type);state.phase=0;state.updates=0;state.trainCursor=4;state.last=null;state.cancel=false;
+ state.history=[{step:0,train:E.dataLoss(state.model,state.series,4,42),test:E.dataLoss(state.model,state.series,43,59)}];
+ state.surfaceSignature=null;
+ document.querySelectorAll('.model-btn').forEach(b=>b.classList.toggle('active',b.dataset.model===state.type));
+ $('scenario').value=state.scenario;$('sampleSlider').value=state.index;
+ $('trainingStatus').textContent='Weights reset to identical reproducible starting values. Prediction has NOT been corrected yet.';
+ render(true);
+}
+function current(){return E.sampleAt(state.series,state.index);}
+function calc(){return E.lossAndGrad(state.model,current());}
+function nextPhase(){if(state.training)return;setPhase(state.phase===4?0:state.phase+1);}
+function setPhase(p){if(state.training)return;const start=state.phase;stopOnStepOnly();if(p===4&&start!==4){
+  const s=current(),update=E.stepUpdate(state.model,s,state.lr);
+  state.updates++;state.last={...update,sampleIndex:state.index,modelType:state.type};record();
+  $('trainingStatus').textContent=`Weight update ${state.updates}: sample loss ${fixed(update.before.loss,5)} → ${fixed(update.after.loss,5)} (${update.after.loss<update.before.loss?'improved':'did not improve'}).`;
+ }
+ state.phase=p;render(false);
+}
+function stopOnStepOnly(){} // The stepper can run while the automatic walkthrough is active.
+function record(){state.history.push({step:state.updates,train:E.dataLoss(state.model,state.series,4,42),test:E.dataLoss(state.model,state.series,43,59)});if(state.history.length>350)state.history=state.history.filter((_,i)=>i===0||i%2===0||i===state.history.length-1);}
+async function runTraining(n){
+ if(state.training)return;stopAuto();state.training=true;state.cancel=false;
+ const controls=[...document.querySelectorAll('.train-btn'),...document.querySelectorAll('.model-btn'),$('scenario'),$('sampleSlider'),$('trainScope'),$('resetBtn'),$('nextBtn')];controls.forEach(x=>x.disabled=true);$('stopBtn').disabled=false;
+ let done=0,last=null,scope=state.scope;
+ $('trainingStatus').textContent=`Running ${n} real BPTT update(s) on ${scope==='all'?'training months 5–43':'the selected example'}…`;
+ try{
+  while(done<n&&!state.cancel){
+   for(let j=0;j<Math.min(5,n-done);j++){
+    const idx=scope==='all'?state.trainCursor:state.index;
+    if(scope==='all'){state.trainCursor++;if(state.trainCursor>42)state.trainCursor=4;}
+    const s=E.sampleAt(state.series,idx);
+    last=E.stepUpdate(state.model,s,state.lr);state.updates++;done++;record();
+   }
+   $('progressFill').style.width=(100*done/n).toFixed(1)+'%';
+   $('trainingStatus').textContent=`Training ${done}/${n} · last update loss ${fixed(last.before.loss,5)} → ${fixed(last.after.loss,5)} · actual parameter updates ${state.updates}`;
+   render(false,true);
+   await new Promise(r=>setTimeout(r,0));
+  }
+ }finally{
+  state.training=false;controls.forEach(x=>x.disabled=false);$('stopBtn').disabled=true;state.phase=4;
+  state.last=last?{...last,sampleIndex:scope==='all'?(state.trainCursor===4?42:state.trainCursor-1):state.index,modelType:state.type}:state.last;
+  render(true);$('progressFill').style.width='0%';
+  const test=state.history.at(-1).test,train=state.history.at(-1).train;
+  $('trainingStatus').textContent=`${state.cancel?'Stopped':'Completed'} ${done} update(s). Training loss: ${fixed(train,5)} · held-out loss: ${fixed(test,5)}. ${scope==='sample'&&state.index>=43?'WARNING: training on a held-out example invalidates that example as an unseen test.':''}`;
+ }
+}
+function updateMetrics(r,s){
+ const p=E.unscale(r.f.pred),a=s.actual,err=Math.abs(p-a);
+ $('prediction').textContent=number(p);$('actual').textContent=number(a);$('error').textContent=number(err);$('updates').textContent=state.updates;
+ $('sampleLabel').textContent=month(state.index)+' '+(state.index<=42?'TRAIN':'TEST');$('lrValue').textContent=state.lr.toFixed(3);
+ $('predictionFoot').textContent=state.updates?'Prediction using updated parameters':'Untrained model prediction';
+ $('errorFoot').textContent='|prediction − true value|';
+ $('trainFoot').textContent=state.updates?'Authentic BPTT weight updates':'No parameters have been optimized';
+ $('networkName').textContent=state.type==='RNN'?'recurrent neural network':'Long Short-Term Memory network';
+ $('cellLabel').textContent=state.type==='RNN'?'Hidden units: 3':'Memory cells: 3';
+ $('seqLabel').textContent='Sequence: 4 steps';
+}
+function labelPath(p){return p.map(x=>String(x)).join('.').replace('gates.','');}
+function chosenPaths(){if(state.type==='RNN')return [['Wy',0],['Wx',0],['Wh',0,0],['by']];return [['Wy',0],['gates','f','b',0],['gates','g','Wx',0],['by']];}
+function renderLedger(r){
+ const upd=state.last&&state.last.modelType===state.type&&state.last.sampleIndex===state.index?state.last:null;
+ const rows=chosenPaths().map(p=>{
+  const old=state.last&&state.phase===4&&state.last.modelType===state.type?E.getPath(state.last.old,p):E.getPath(state.model,p);
+  const g=state.last&&state.phase===4&&state.last.modelType===state.type?E.getPath(state.last.grads,p):E.getPath(r.grad,p);
+  const newValue=old-state.lr*g;
+  const after=state.last&&state.phase===4&&state.last.modelType===state.type?E.getPath(state.model,p):newValue;
+  return `<div class="ledger-row"><span>${labelPath(p)}</span><span>${fixed(old,4)}</span><span class="${g>=0?'grad-plus':'grad-minus'}">${format(g,4)}</span><span>${fixed(after,4)}</span></div>`;
+ });
+ $('ledger').innerHTML=rows.join('');
+}
+function renderGates(r){const box=$('gateBox');box.hidden=state.type!=='LSTM';if(box.hidden)return;
+ const gates=r.f.states.at(-1).gates;
+ const names={f:'FORGET',i:'INPUT',o:'OUTPUT',g:'CANDIDATE'};
+ $('gateMeters').innerHTML=['f','i','o','g'].map(k=>{
+  const v=gates[k][0],percentage=k==='g'?(v+1)*50:v*100;
+  return `<div class="gate-row"><b title="Unit 1">${names[k]}</b><div class="gate-track"><div class="gate-fill" style="width:${percentage}%;background:${{f:'#ffb879',i:'#79e5cc',o:'#b8a5ff',g:'#75beef'}[k]}"></div></div><span>${fixed(v,3)}</span></div>`;
+ }).join('');
+}
+function renderPhase(r,s){
+ const phase=state.phase, p=PHASES[phase], target=s.y,pred=r.f.pred,diff=pred-target;
+ $('stepCount').textContent='STEP '+(phase+1)+' / 5';$('status').textContent=p.status;$('stepTitle').textContent=p.title;$('keyIdea').textContent=p.idea;
+ const xstr=s.raw.map(v=>number(v)).join(' → ');
+ let desc,equation,help,outcome,focus;
+ if(phase===0){
+  desc=`The last four observed sales are ${xstr} units. They enter the network in order. Its task: predict ${month(state.index)}.`;
+  equation=`x = [${s.x.map(v=>fixed(v,2)).join(', ')}]`;
+  help='Input normalization: (sales − 165) / 100. The correct next month is hidden from the forward pass.';
+  outcome=`The 4 inputs are real numerical values from this educational scenario, not decorative graph nodes.`;
+  focus='INPUT: four historical months are read from left to right.';
+ }else if(phase===1){
+  desc='The network calculates a hidden state at every time step. A linear output layer converts the last hidden state into the next-month forecast.';
+  equation=`ŷ = ${number(E.unscale(pred))} units`;
+  help=state.type==='RNN'?'hₜ = tanh(Wₓxₜ + Wₕhₜ₋₁ + b);  ŷ = Wᵧh₄ + bᵧ':'LSTM gates: f, i, o = sigmoid(...); g = tanh(...); cₜ = f·cₜ₋₁ + i·g; hₜ = o·tanh(cₜ).';
+  outcome=`The model predicts ${number(E.unscale(pred))} units WITHOUT seeing the correct answer ${number(s.actual)}.`;
+  focus='FORWARD: signals flow through hidden states to the model output.';
+ }else if(phase===2){
+  desc=`The predicted value is ${number(E.unscale(pred))}; the true next value is ${number(s.actual)}. Their difference is ${format(E.unscale(pred)-s.actual,1)} units.`;
+  equation=`L = ½(ŷ − y)² = ${fixed(r.loss,6)}`;
+  help=`Loss uses normalized values. Absolute prediction error = ${number(Math.abs(E.unscale(pred)-s.actual))} sales units.`;
+  outcome=`${diff>=0?'Prediction too high':'Prediction too low'} by ${number(Math.abs(E.unscale(pred)-s.actual))} units. The model needs a supervised target to know this.`;
+  focus='ERROR: the prediction is compared with its label; a loss is computed.';
+ }else if(phase===3){
+  const dWy=r.grad.Wy[0];
+  desc='Backpropagation Through Time applies the chain rule. Each earlier step receives a derivative that tells how its parameters influence the final loss.';
+  equation=`∂L/∂Wy₁ = ${format(dWy,5)}`;
+  help=`For this output weight: (ŷ − y) × h₄,₁ = ${format(diff,4)} × ${format(r.f.h[0],4)}. Other parameters use the full BPTT chain rule.`;
+  outcome=`The red signal flows from the output back toward earlier hidden states. Gradients are computed analytically, not guessed.`;
+  focus='BACKWARD: chain-rule gradients pass from the prediction toward earlier time steps.';
+ }else{
+  const u=state.last&&state.last.modelType===state.type?state.last:null;
+  if(u){const wOld=u.old.Wy[0],wg=u.grads.Wy[0],wNew=state.model.Wy[0];
+   const sameSample=u.sampleIndex===state.index;
+   const oldSelected=E.forward(u.old,s.x).pred;
+   const newSelected=E.forward(state.model,s.x).pred;
+   desc=`The optimizer changes every trainable parameter. The example used in the latest update: ${month(u.sampleIndex)}. Its loss: ${fixed(u.before.loss,6)} → ${fixed(u.after.loss,6)}.`;
+   equation=`${fixed(wOld,4)} − ${fixed(state.lr,3)} × (${format(wg,4)}) = ${fixed(wNew,4)}`;
+   help=`Shown for output weight Wy₁. The same gradient-descent rule updates all ${state.type==='RNN'?'19':'64'} trainable parameters.`;
+   outcome=`SELECTED ${month(state.index)} — BEFORE: ${number(E.unscale(oldSelected))} units · AFTER: ${number(E.unscale(newSelected))} units · Correct: ${number(s.actual)} units. ${sameSample?(u.after.loss<u.before.loss?'The correction improved this example.':'This step increased this example’s loss; try reducing the learning rate.'):'This update was trained on another month; its effect on the displayed month may vary.'}`;
+  }else{
+   desc='Click this stage to perform a genuine gradient-descent update with the currently selected training example.';
+   equation='w_new = w_old − η × gradient';help='η is the learning rate. The update is not a visual simulation.';outcome='An update changes the parameters; the model then makes a new forward prediction.';
+  }
+  focus='UPDATE: gradients adjust weights; the network must predict again to measure the effect.';
+ }
+ $('stepDescription').textContent=desc;$('equation').textContent=equation;$('equationHelp').textContent=help;
+ $('actionOutcome').innerHTML=`<span class="callout-icon">✦</span><span>${outcome}</span>`;
+ $('focusInsight').textContent=focus;
+ document.querySelectorAll('.phase').forEach((el,i)=>{el.classList.toggle('phase-active',i===phase);el.classList.toggle('phase-done',i<phase);});
+ if(state.autoplay&&phase===4){stopAuto();}
+ renderLedger(r);renderGates(r);
+}
+function renderTimeStrip(s){$('timeStrip').innerHTML=s.raw.map((v,i)=>`<div class="month-chip"><span>${month(s.index-4+i)} · INPUT ${i+1}</span><b>${number(v)} units</b></div>`).join('')+`<div class="month-chip target"><span>${month(s.index)} · TARGET</span><b>${number(s.actual)} units</b></div>`;}
+const svgText=(x,y,value,clazz='svg-small',anchor='middle',size)=>`<text x="${x}" y="${y}" text-anchor="${anchor}" class="${clazz}" ${size?'style="font-size:'+size+'px"':''}>${value}</text>`;
+const svgLine=(x1,y1,x2,y2,color='#3d839c',width=2,opacity=.65,dashed=false)=>`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${color}" stroke-width="${width}" opacity="${opacity}" ${dashed?'stroke-dasharray="8 8"':''} marker-end="url(#arrow)"/>`;
+function renderNetwork(r,s){
+ const xPos=[125,355,585,815],ys=[215,280,345];const stage=state.phase;
+ let a=`<defs><marker id="arrow" markerWidth="9" markerHeight="7" refX="7" refY="3.5" orient="auto"><path d="M0 0 L7 3.5 L0 7" fill="none" stroke="#5db8ca" stroke-width="1.5"/></marker><marker id="redarrow" markerWidth="9" markerHeight="7" refX="7" refY="3.5" orient="auto"><path d="M0 0 L7 3.5 L0 7" fill="#ff9385"/></marker><linearGradient id="nodegrad" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#2ad4c8"/><stop offset="1" stop-color="#336caa"/></linearGradient><radialGradient id="nodefill"><stop stop-color="#1e6b80"/><stop offset="1" stop-color="#0b2845"/></radialGradient></defs>`;
+ a+=svgText(30,36,'SEQUENCE IN TIME  →','svg-small','start');
+ for(let t=0;t<4;t++)a+=svgText(xPos[t],53,month(s.index-4+t),'svg-title');
+ if(state.type==='RNN'){
+  // Recurrent edges 3x3, plus input->hidden (three links at each month)
+  for(let t=0;t<4;t++){
+   for(let j=0;j<3;j++){
+    a+=`<line x1="${xPos[t]}" y1="123" x2="${xPos[t]}" y2="${ys[j]-24}" class="graph-line input-line" opacity="${stage===0||stage===1?0.78:0.33}"/>`;
+    if(t){for(let k=0;k<3;k++)a+=`<line x1="${xPos[t-1]+23}" y1="${ys[k]}" x2="${xPos[t]-23}" y2="${ys[j]}" class="graph-line ${stage===3?'backward':''}" stroke="${stage===3?'#ff9482':'#367c90'}" opacity="${stage===3?0.75:0.26}"/>`;}
+   }
+  }
+  for(let t=0;t<4;t++){
+   a+=`<circle cx="${xPos[t]}" cy="98" r="27" fill="#102e46" stroke="#69cbd7" stroke-width="2" class="${stage<2?'node-glow':''}"/>`;
+   a+=svgText(xPos[t],95,'x'+(t+1),'node-caption');a+=svgText(xPos[t],113,fixed(s.x[t],2),'svg-small');
+   const h=r.f.states[t].h;
+   for(let j=0;j<3;j++){
+    const c=h[j]>=0?'#4ee5d8':'#c0a0ff';
+    a+=`<circle cx="${xPos[t]}" cy="${ys[j]}" r="28" fill="url(#nodefill)" stroke="${c}" stroke-width="${stage===3?3:2}" opacity=".95"/>`;
+    a+=svgText(xPos[t],ys[j]-4,'h'+(j+1),'node-caption');a+=svgText(xPos[t],ys[j]+15,fixed(h[j],2),'node-value');
+   }
+   a+=svgText(xPos[t],408,'HIDDEN STATE '+(t+1),'svg-small');
+  }
+  a+=svgLine(838,280,979,265,stage===3?'#ff9482':'#6bcddc',3,1,stage===3);
+  if(stage===3){a+=`<path d="M 965 245 Q 910 170 818 175" fill="none" class="graph-line backward" stroke="#ff9482" stroke-width="4" marker-end="url(#redarrow)"/>`;}
+ }else{
+  for(let t=0;t<4;t++){
+   const x=xPos[t]-82, st=r.f.states[t],gg=st.gates;
+   if(t) {a+=svgLine(xPos[t-1]+81,167,xPos[t]-81,167,stage===3?'#ff9a88':'#fac57d',4,stage===3?1:.75,stage===3);a+=svgText(xPos[t]-112,148,'cₜ','svg-small');}
+   a+=svgLine(xPos[t],126,xPos[t],191,'#61bbd4',3,.75);
+   a+=`<circle cx="${xPos[t]}" cy="98" r="27" fill="#102e46" stroke="#69cbd7" stroke-width="2"/>`;
+   a+=svgText(xPos[t],96,'x'+(t+1),'node-caption');a+=svgText(xPos[t],114,fixed(s.x[t],2),'svg-small');
+   a+=`<rect x="${x}" y="192" width="164" height="186" rx="17" fill="#0f2b3e" stroke="${stage===3?'#ff978c':'#5ac0cb'}" stroke-width="2"/>`;
+   a+=svgText(xPos[t],218,'LSTM CELL '+(t+1),'svg-title');
+   const dots=[['F',gg.f[0],'#ffd292'],['I',gg.i[0],'#71e3ca'],['G',gg.g[0],'#88bcf7'],['O',gg.o[0],'#c3aaff']];
+   for(let k=0;k<4;k++){
+    const px=x+28+(k%2)*93,py=263+Math.floor(k/2)*50;
+    a+=`<rect x="${px-17}" y="${py-24}" rx="7" width="37" height="40" fill="#193849" stroke="${dots[k][2]}" stroke-width="1.5"/>`;
+    a+=svgText(px+1,py-7,dots[k][0],'svg-small');a+=svgText(px+1,py+9,fixed(dots[k][1],2),'node-value','middle',12);
+   }
+   a+=svgText(xPos[t],357,'hₜ = '+fixed(st.h[0],3)+' · cₜ = '+fixed(st.c[0],3),'svg-small','middle',12);
+   a+=svgText(xPos[t],408,'GATED MEMORY '+(t+1),'svg-small');
+  }
+  a+=svgLine(898,281,979,268,stage===3?'#ff9482':'#6bcddc',3,1,stage===3);
+  if(stage===3)a+=`<path d="M 972 245 Q 933 130 890 167" fill="none" class="graph-line backward" stroke="#ff9482" stroke-width="3" marker-end="url(#redarrow)"/>`;
+ }
+ const pred=E.unscale(r.f.pred),target=s.actual;
+ a+=`<circle cx="1025" cy="264" r="55" fill="#102b3e" stroke="${stage===2?'#ff9385':'#6ee7db'}" stroke-width="3" class="node-glow"/>`;
+ a+=svgText(1025,250,'PREDICTION','svg-small');a+=svgText(1025,281,number(pred),'svg-pred');
+ a+=svgText(1025,335,'TRUE VALUE','svg-small');a+=svgText(1025,361,number(target),'svg-target');
+ if(stage>=2){a+=`<line x1="1024" y1="318" x2="1024" y2="341" stroke="#ff9385" stroke-width="3" stroke-dasharray="4 4"/>`;a+=svgText(1025,400,'ERROR: '+number(Math.abs(pred-target)),'svg-error');}
+ if(stage===3){a+=`<path d="M 963 278 C 913 280 900 280 870 280" fill="none" stroke="#ff9385" stroke-width="4" stroke-dasharray="9 7" class="graph-line backward" marker-end="url(#redarrow)"/>`;a+=svgText(1000,442,'ERROR TRAVELS BACKWARD','svg-back');}
+ if(stage===4)a+=svgText(1027,442,'WEIGHTS UPDATED ✓','svg-target');
+ if(stage===1){for(let t=0;t<3;t++)a+=`<circle r="5" class="pulse-particle"><animateMotion dur="2.1s" begin="${t*.65}s" repeatCount="indefinite" path="M${xPos[t]+20} 280 L${xPos[t+1]-25} 280"/></circle>`;}
+ $('netGraph').innerHTML=a;
+}
+function commonPlot(id,data,layout){const el=$(id);const fn=state.chartMade[id]?'react':'newPlot';Plotly[fn](el,data,{...PLOT_BASE,...layout},plotConfig);state.chartMade[id]=true;}
+function renderForecast(r,s){const histx=[s.index-3,s.index-2,s.index-1,s.index].map(i=>i+1);const actualMonth=s.index+1;
+ let traces=[
+ {x:histx,y:s.raw,mode:'lines+markers',name:'Observed inputs',line:{color:'#64dce7',width:3},marker:{size:9},hovertemplate:'Month %{x}<br>Sales %{y:.1f}<extra></extra>'},
+ {x:[actualMonth],y:[s.actual],mode:'markers',name:'True target',marker:{size:17,symbol:'diamond',color:'#79edb2',line:{color:'#e7ffed',width:1.5}},hovertemplate:'True %{y:.1f}<extra></extra>'},
+ {x:[actualMonth],y:[E.unscale(r.f.pred)],mode:'markers',name:'New prediction',marker:{size:16,color:'#ff987f',symbol:'circle',line:{color:'#ffe3dc',width:1.5}},hovertemplate:'Predicted %{y:.1f}<extra></extra>'}
+ ];
+ if(state.last&&state.last.sampleIndex===state.index&&state.last.modelType===state.type)traces.push({x:[actualMonth],y:[E.unscale(state.last.before.f.pred)],mode:'markers',name:'Before update',marker:{size:13,color:'#f7ce7c',symbol:'x'},hovertemplate:'Before update %{y:.1f}<extra></extra>'});
+ commonPlot('forecastPlot',traces,{xaxis:{...PLOT_BASE.xaxis,title:'Month',dtick:1,tick0:s.index-3,range:[s.index-3-.45,s.index+1.5]},yaxis:{...PLOT_BASE.yaxis,title:'Sales units'}});
+}
+function renderLoss(){const h=state.history;
+ commonPlot('lossPlot',[
+ {x:h.map(r=>r.step),y:h.map(r=>r.train),mode:'lines+markers',name:'Training loss',line:{color:'#6be8d6',width:3},marker:{size:h.length<10?8:3},hovertemplate:'Update %{x}<br>Training loss %{y:.6f}<extra></extra>'},
+ {x:h.map(r=>r.step),y:h.map(r=>r.test),mode:'lines+markers',name:'Held-out loss',line:{color:'#ffba8e',width:2.5},marker:{size:h.length<10?8:3},hovertemplate:'Update %{x}<br>Held-out loss %{y:.6f}<extra></extra>'}],
+ {xaxis:{...PLOT_BASE.xaxis,title:'Weight updates',rangemode:'tozero',dtick:h.length<=9?1:undefined},yaxis:{...PLOT_BASE.yaxis,title:'Average half-squared loss',rangemode:'tozero'}});
+}
+function renderGradient(r){
+ const values=r.backwardNorm;
+ commonPlot('gradientPlot',[{type:'bar',x:['t₁ earliest','t₂','t₃','t₄ latest'],y:values,marker:{color:['#5c89a8','#67b2c4','#76d5d3','#ff9989'],line:{color:'#b9e3e8',width:.4}},text:values.map(v=>fixed(v,4)),textposition:'outside',textfont:{color:'#c6dfed',size:11},hovertemplate:'Backward step %{x}<br>Gradient norm %{y:.6f}<extra></extra>'}],{showlegend:false,yaxis:{...PLOT_BASE.yaxis,title:'Preactivation-gradient norm',rangemode:'tozero'},xaxis:{...PLOT_BASE.xaxis,showgrid:false},margin:{...PLOT_BASE.margin,t:30}});
+}
+function renderSurface(r,s){
+ // A browser-safe Plotly contour map. This is the EXACT 2D loss slice for
+ // one output weight and the output bias, keeping all other parameters fixed.
+ // It deliberately does not depend on WebGL, so it works on classroom PCs.
+ const w=state.model.Wy[0],b=state.model.by,xx=[],yy=[],grid=[],h0=r.f.h[0];
+ for(let j=0;j<43;j++)xx.push(w-.33+j*(.66/42));
+ for(let i=0;i<43;i++)yy.push(b-.33+i*(.66/42));
+ for(let i=0;i<43;i++){let row=[];for(let j=0;j<43;j++){
+  const prediction=r.f.pred+(xx[j]-w)*h0+(yy[i]-b);
+  row.push(.5*(prediction-s.y)**2);
+ }grid.push(row);}
+ const gw=r.grad.Wy[0],gb=r.grad.by,eta=state.lr;
+ const w2=w-eta*gw,b2=b-eta*gb;
+ const loss2=.5*(r.f.pred+(w2-w)*h0+(b2-b)-s.y)**2;
+ const factor=12; // Direction pointer only: magnified for projection, clearly labeled.
+ const data=[
+ {type:'contour',x:xx,y:yy,z:grid,colorscale:[[0,'#0c253d'],[.28,'#155b77'],[.56,'#1f9c9a'],[1,'#e7be76']],showscale:true,
+   colorbar:{title:{text:'Loss',side:'right',font:{color:'#a9c3d4',size:11}},tickfont:{color:'#a9c3d4'},thickness:9,len:.83,outlinewidth:0},
+   contours:{coloring:'heatmap',showlabels:true,labelfont:{color:'#e3f7f8',size:9}},
+   hovertemplate:'Output weight %{x:.3f}<br>Output bias %{y:.3f}<br>Loss %{z:.5f}<extra></extra>'},
+ {type:'scatter',mode:'markers',name:'Current weight',x:[w],y:[b],marker:{size:14,color:'#ff8f7c',line:{width:2,color:'#ffded3'}},hovertemplate:'Current parameters<br>Loss '+fixed(r.loss,6)+'<extra></extra>'},
+ {type:'scatter',mode:'markers',name:'Actual next step',x:[w2],y:[b2],marker:{size:10,symbol:'diamond',color:'#8ff0b4',line:{width:1.5,color:'#e5ffeb'}},hovertemplate:'Next gradient step<br>Projected loss '+fixed(loss2,6)+'<extra></extra>'},
+ {type:'scatter',mode:'lines',name:'Descent direction ×12',x:[w,w+factor*(w2-w)],y:[b,b+factor*(b2-b)],line:{color:'#ffda80',width:3,dash:'dash'},hovertemplate:'Direction enlarged ×12 for visibility<extra></extra>'}
+ ];
+ const layout={showlegend:true,legend:{orientation:'h',x:0,y:1.20,font:{size:9}},
+  xaxis:{...PLOT_BASE.xaxis,title:'Output weight 1',range:[w-.33,w+.33]},
+  yaxis:{...PLOT_BASE.yaxis,title:'Output bias',range:[b-.33,b+.33]},
+  margin:{l:55,r:45,t:36,b:45},
+  annotations:[{x:w+factor*(w2-w),y:b+factor*(b2-b),ax:w,ay:b,xref:'x',yref:'y',axref:'x',ayref:'y',arrowhead:3,arrowsize:1.2,arrowwidth:2,arrowcolor:'#ffe49a',showarrow:true,text:''}]
+ };
+ commonPlot('surfacePlot',data,layout);
+}
+
+function render(heavy=false,duringTraining=false){
+ const s=current(),r=calc();updateMetrics(r,s);renderPhase(r,s);renderTimeStrip(s);renderNetwork(r,s);
+ renderForecast(r,s);renderLoss();renderGradient(r);
+ if(heavy||!state.chartMade.surfacePlot)renderSurface(r,s);
+ if(state.scope==='sample'&&state.index>=43){$('gradientNote').textContent='CAUTION: selecting Train on highlighted example for a TEST month uses that month’s correct answer for training (data leakage). Choose All training months to preserve a held-out test.';}
+ else $('gradientNote').textContent='Real BPTT preactivation-gradient norms at each input month; values may differ across training steps.';
+}
+init();
+})();
+</script>
+</body>
+</html>
